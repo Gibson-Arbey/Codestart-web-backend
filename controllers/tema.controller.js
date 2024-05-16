@@ -5,7 +5,7 @@ const listarTemas = async (req = request, res = response) => {
   try {
     const temas = await Tema.find();
 
-    return res.json({ type: "success", temas });
+    return res.json({ type: "success", msg: temas });
   } catch (error) {
     console.log(error);
     return res.status(500).json({ type: "error", msg: error.message });

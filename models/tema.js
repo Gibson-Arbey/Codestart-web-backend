@@ -7,13 +7,9 @@ const temaSchema = new Schema(
       required: [true, "El nombre del tema es obligatorio"],
       maxlength: [100, "El nombre no puede exceder los 100 caracteres"],
     },
-    resultados: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: "Resultado",
-        required: false,
-      },
-    ],
+    orden: {
+      type: Number,
+    },
   },
   {
     timestamps: true,
