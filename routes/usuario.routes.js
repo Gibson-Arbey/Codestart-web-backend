@@ -7,7 +7,7 @@ const router = Router();
 router.post(
   "/registro",
   [
-    check("correo", "El correo es obligatorio").isEmail(),
+    check("correo", "El correo no es valido").isEmail(),
     check("contrasena", "La contraseña es obligatoria").not().isEmpty(),
     check("nombre", "El nombre es obligatorio").not().isEmpty(),
     validarCampos,
@@ -18,7 +18,7 @@ router.post(
 router.post(
   "/login",
   [
-    check("correo", "El correo es obligatorio").isEmail(),
+    check("correo", "El correo no es valido").isEmail(),
     check("contrasena", "La contraseña es obligatoria").not().isEmpty(),
     validarCampos,
   ],

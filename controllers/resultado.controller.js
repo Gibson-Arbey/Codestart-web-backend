@@ -50,6 +50,41 @@ const registrarResultado = async (req, res) => {
   }
 };
 
+const listarResultadosByTemaAndUsuario = async (
+  req = request,
+  res = response
+) => {
+  const { temaId, usuarioId } = req.query;
+
+  try {
+    const usuario = await Usuario.findById(usuarioId);
+    if (!usuario) {
+      return res
+        .status(404)
+        .json({ type: "error", msg: "No se encontró el usuario." });
+    }
+
+    const tema = await Tema.findById(temaId);
+    if (!tema) {
+      return res
+        .status(404)
+        .json({ type: "error", msg: "No se encontró el tema." });
+    }
+
+    const resultados = await Resultado.find({
+      tema: temaId,
+      usuario: usuarioId,
+    }).select("tema usuario puntaje")
+      .populate("usuario", "nombre")
+      .populate("tema", "orden nombre");
+
+    return res.status(200).json({ type: "success", msg: resultados });
+  } catch (error) {
+    return res.status(500).json({ type: "error", msg: error.message });
+  }
+};
+
 module.exports = {
   registrarResultado,
+  listarResultadosByTemaAndUsuario,
 };
