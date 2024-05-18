@@ -2,7 +2,9 @@ const { Router } = require("express");
 const { check } = require("express-validator");
 const {
   registrarResultado,
-  listarResultadosByTemaAndUsuario,
+  obtenerResultadoByTemaAndUsuario,
+  listarResultadosByUsuario,
+  obtenerUltimoResultado
 } = require("../controllers/resultado.controller");
 const { validarCampos, validarJWT } = require("../middlewares");
 const router = Router();
@@ -19,11 +21,35 @@ router.put(
   registrarResultado
 );
 
-router.get("/", [
-  validarJWT,
+router.get(
+  "/",
+  [
+    validarJWT,
     check("usuarioId", "El id del usuario no es valido.").isMongoId(),
     check("temaId", "El id del tema no es valido.").isMongoId(),
     validarCampos,
-], listarResultadosByTemaAndUsuario);
+  ],
+  obtenerResultadoByTemaAndUsuario
+);
+
+router.get(
+  "/:usuarioId",
+  [
+    validarJWT,
+    check("usuarioId", "El id del usuario no es valido.").isMongoId(),
+    validarCampos,
+  ],
+  listarResultadosByUsuario
+);
+
+router.get(
+  "/ultimo/:usuarioId",
+  [
+    validarJWT,
+    check("usuarioId", "El id del usuario no es valido.").isMongoId(),
+    validarCampos,
+  ],
+  obtenerUltimoResultado
+);
 
 module.exports = router;

@@ -50,13 +50,13 @@ const registrarResultado = async (req, res) => {
   }
 };
 
-const listarResultadosByTemaAndUsuario = async (
+const obtenerResultadoByTemaAndUsuario = async (
   req = request,
   res = response
 ) => {
-  const { temaId, usuarioId } = req.query;
-
   try {
+    const { temaId, usuarioId } = req.query;
+
     const usuario = await Usuario.findById(usuarioId);
     if (!usuario) {
       return res
@@ -71,12 +71,39 @@ const listarResultadosByTemaAndUsuario = async (
         .json({ type: "error", msg: "No se encontró el tema." });
     }
 
-    const resultados = await Resultado.find({
+    const resultado = await Resultado.findOne({
       tema: temaId,
       usuario: usuarioId,
-    }).select("tema usuario puntaje")
+    })
+      .select("tema usuario puntaje")
       .populate("usuario", "nombre")
       .populate("tema", "orden nombre");
+
+    return res.status(200).json({ type: "success", msg: resultado });
+  } catch (error) {
+    return res.status(500).json({ type: "error", msg: error.message });
+  }
+};
+
+const listarResultadosByUsuario = async (req = request, res = response) => {
+  try {
+    const { usuarioId } = req.params;
+
+    const usuario = await Usuario.findById(usuarioId);
+    if (!usuario) {
+      return res
+        .status(404)
+        .json({ type: "error", msg: "No se encontró el usuario." });
+    }
+
+    let resultados = await Resultado.find({
+      usuario: usuarioId,
+    })
+      .select("tema usuario puntaje")
+      .populate("usuario", "nombre")
+      .populate("tema", "orden nombre");
+
+    resultados = resultados.sort((a, b) => a.tema.orden - b.tema.orden);
 
     return res.status(200).json({ type: "success", msg: resultados });
   } catch (error) {
@@ -84,7 +111,34 @@ const listarResultadosByTemaAndUsuario = async (
   }
 };
 
+const obtenerUltimoResultado = async (req = request, res = response) => {
+  try {
+    const { usuarioId } = req.params;
+
+    const usuario = await Usuario.findById(usuarioId);
+    if (!usuario) {
+      return res
+        .status(404)
+        .json({ type: "error", msg: "No se encontró el usuario." });
+    }
+
+    let resultado = await Resultado.findOne({
+      usuario: usuarioId,
+    })
+      .select("tema usuario puntaje")
+      .populate("usuario", "nombre")
+      .populate("tema", "orden nombre")
+      .sort({ updatedAt: -1 });
+
+    return res.status(200).json({ type: "success", msg: resultado });
+  } catch (error) {
+    return res.status(500).json({ type: "error", msg: error.message });
+  }
+};
+
 module.exports = {
   registrarResultado,
-  listarResultadosByTemaAndUsuario,
+  obtenerResultadoByTemaAndUsuario,
+  listarResultadosByUsuario,
+  obtenerUltimoResultado,
 };
