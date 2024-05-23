@@ -4,6 +4,7 @@ const {
   registrarResultado,
   obtenerResultadoByTemaAndUsuario,
   listarResultadosByUsuario,
+  listarResultadosByTema,
   obtenerUltimoResultado
 } = require("../controllers/resultado.controller");
 const { validarCampos, validarJWT } = require("../middlewares");
@@ -40,6 +41,16 @@ router.get(
     validarCampos,
   ],
   listarResultadosByUsuario
+);
+
+router.get(
+  "/tema/:temaId",
+  [
+    validarJWT,
+    check("temaId", "El id del tema no es valido.").isMongoId(),
+    validarCampos,
+  ],
+  listarResultadosByTema
 );
 
 router.get(

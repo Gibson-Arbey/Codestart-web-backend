@@ -111,6 +111,32 @@ const listarResultadosByUsuario = async (req = request, res = response) => {
   }
 };
 
+const listarResultadosByTema = async (req = request, res = response) => {
+  try {
+    const { temaId } = req.params;
+
+    const tema = await Tema.findById(temaId);
+    if (!tema) {
+      return res
+        .status(404)
+        .json({ type: "error", msg: "No se encontró el tema." });
+    }
+
+    let resultados = await Resultado.find({
+      tema: temaId,
+    })
+      .select("tema usuario puntaje")
+      .populate("usuario", "nombre")
+      .populate("tema", "orden nombre");
+
+    resultados = resultados.sort((a, b) => a.tema.orden - b.tema.orden);
+
+    return res.status(200).json({ type: "success", msg: resultados });
+  } catch (error) {
+    return res.status(500).json({ type: "error", msg: error.message });
+  }
+};
+
 const obtenerUltimoResultado = async (req = request, res = response) => {
   try {
     const { usuarioId } = req.params;
@@ -140,5 +166,6 @@ module.exports = {
   registrarResultado,
   obtenerResultadoByTemaAndUsuario,
   listarResultadosByUsuario,
+  listarResultadosByTema,
   obtenerUltimoResultado,
 };
