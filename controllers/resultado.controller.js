@@ -3,7 +3,8 @@ const { Usuario, Tema, Resultado } = require("../models");
 
 const registrarResultado = async (req, res) => {
   try {
-    const { usuarioId, temaId, puntaje } = req.body;
+    let { usuarioId, temaId, puntaje } = req.body;
+	puntaje = parseFloat(puntaje).toFixed(2);
 
     // Buscar el usuario por su ID
     const usuario = await Usuario.findById(usuarioId);

@@ -16,7 +16,7 @@ router.put(
     validarJWT,
     check("usuarioId", "El id del usuario no es valido.").isMongoId(),
     check("temaId", "El id del tema no es valido.").isMongoId(),
-    check("puntaje", "El puntaje no es valido.").isInt({ min: 0, max: 100 }),
+    check("puntaje", "El puntaje no es valido.").isFloat({ min: 0, max: 100 }),
     validarCampos,
   ],
   registrarResultado
