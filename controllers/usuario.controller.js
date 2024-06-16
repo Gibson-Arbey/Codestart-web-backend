@@ -86,7 +86,24 @@ const login = async (req, res = response) => {
   }
 };
 
+const getEstudiantes = async (req = request, res = response) => {
+  try {
+    const estudiantes = await Usuario.find({ correo: {$ne: "admin@gmail.com"}});
+    return res.status(200).json({
+      type: "success",
+      msg: estudiantes,
+    })
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      type: "error",
+      msg: error.message,
+    });
+  }
+}
+
 module.exports = {
   guardarUsuario,
-  login
+  login,
+  getEstudiantes
 };
