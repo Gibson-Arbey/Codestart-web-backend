@@ -88,7 +88,7 @@ const login = async (req, res = response) => {
 
 const getEstudiantes = async (req = request, res = response) => {
   try {
-    const estudiantes = await Usuario.find({ correo: {$ne: "admin@gmail.com"}});
+    const estudiantes = await Usuario.find({ correo: {$ne: "admin@gmail.com"}}).select("nombre correo");
     return res.status(200).json({
       type: "success",
       msg: estudiantes,
